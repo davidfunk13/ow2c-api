@@ -9,7 +9,7 @@ use CoderCat\JWKToPEM\JWKConverter;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 
-class BattletagRepository
+class BattleNetRepository
 
 {
    protected function setFields(Battletag &$battletag, array $options): void
@@ -18,6 +18,7 @@ class BattletagRepository
         $battletag->battletag = $options['battletag'];
         $battletag->sub = $options['sub'];
     }
+    
     public function bnetAuthHelper(string $code): array
     {
         $bnetAuth = [
@@ -32,8 +33,8 @@ class BattletagRepository
             'code' => $code
         ];
 
-
         $token_uri = env('BLIZZ_TOKEN_URI');
+        
         $identity_keys_uri = env('BLIZZ_IDENTITY_URI');
 
         $client = new Client();
@@ -68,27 +69,5 @@ class BattletagRepository
             'battletag_id' => intval($decoded->sub),
             'sub' => $decoded->sub,
         ];
-    }
-    public function checkExists(int $id): ?Battletag
-    {
-        $exists = Battletag::where('battletag_id', $id)->first();
-
-        if ($exists) {
-            return $exists;
-        }
-
-        return null;
-    }
-
-    public function save(array $options): ?Battletag
-    {
-        $battletag = new Battletag();
-
-        $this->setFields($battletag, $options);
-        if ($battletag->save()) {
-            return $battletag;
-        }
-
-        return null;
     }
 }
