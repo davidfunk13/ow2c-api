@@ -21,16 +21,14 @@ class JWTVerify
 	public function handle($request, \Closure $next)
 	{
 		try {
-			//get jwt from headers
 			$requestHeaders = apache_request_headers();
 			$bearerToken = $requestHeaders['Authorization'];
 			$token = explode(' ', $bearerToken)[1];
 
 			$key = env('JWT_SECRET');
 
-			$decoded = JWT::decode($token, new Key($key, 'HS256'));
+			JWT::decode($token, new Key($key, 'HS256'));
 
-			dd($decoded);
 		} catch (\Exception $e) {
 			if ($e instanceof \Firebase\JWT\SignatureInvalidException) {
 				return response()->json([
