@@ -30,27 +30,29 @@ class JWTVerify
 			JWT::decode($token, new Key($key, 'HS256'));
 
 		} catch (\Exception $e) {
+            dd($e->getMessage());
+
 			if ($e instanceof \Firebase\JWT\SignatureInvalidException) {
 				return response()->json([
 					'status' => 403,
 					'message' => 'Token is Invalid'
 				], 403);
 			}
-			
+
 			if ($e instanceof \Firebase\JWT\ExpiredException) {
 				return response()->json([
 					'status' => 401,
 					'message' => 'Token is Expired'
 				], 401);
 			}
-			
+
 			if ($e instanceof \Firebase\JWT\ExpiredException) {
 				return response()->json([
 					'status' => 400,
 					'message' => 'Token is Blacklisted'
 				], 400);
 			}
-			
+
 			return response()->json([
 				'status' => 404,
 				'message' => 'Authorization Token not present or malformed.'

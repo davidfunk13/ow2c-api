@@ -22,7 +22,6 @@ class BattleNetRepository
 
     public function bnetAuthHelper(string $code): array
     {
-
         $bnetParams = [
             'auth' => [
                 env('BLIZZ_CLIENT_ID'),

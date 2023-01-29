@@ -21,5 +21,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, "login"]);
 
-Route::get('/test', [AuthController::class, "test"])->middleware('jwt.verify');
+//Route::get('/test', [AuthController::class, "test"])->middleware('jwt.verify');
 

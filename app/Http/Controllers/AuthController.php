@@ -20,22 +20,21 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        if($request->has("code")){
-            $code = $request->get('code');
-        }
-        
+        dd(123321);
+        $code = $request->get('code');
+
         $battletag = $this->battleNetRepository->bnetAuthHelper($code);
-        
+
         $issuedAt = time();
-        
+
         $thirtyMinutesFromNow = (3600 / 2);
-        
+
         $expirationDate = time() + $thirtyMinutesFromNow;
-        
+
         $issuer = env('APP_URL') . ':' . env('APP_PORT');
-        
+
         $audience = env('APP_URL') . ':' . env('APP_PORT');
-        
+
         $payload = [
             'battletag'=> $battletag['battletag'],
             'battletag_id'=> $battletag['battletag_id'],
@@ -46,7 +45,7 @@ class AuthController extends Controller
             'nbf' => $issuedAt,
             'exp' => $expirationDate
         ];
-        
+
         $key = env('JWT_SECRET');
 
         $jwt = JWT::encode($payload, $key, 'HS256');
