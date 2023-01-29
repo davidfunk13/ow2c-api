@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Repositories\BattleNetRepository;
+use App\Http\Requests\LoginRequest;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class AuthController extends Controller
         $this->battleNetRepository = $battleNetRepository;
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         if($request->has("code")){
             $code = $request->get('code');
