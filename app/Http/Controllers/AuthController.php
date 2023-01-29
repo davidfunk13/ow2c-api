@@ -20,7 +20,6 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        dd(123321);
         $code = $request->get('code');
 
         $battletag = $this->battleNetRepository->bnetAuthHelper($code);
