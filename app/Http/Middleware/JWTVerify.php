@@ -21,16 +21,21 @@ class JWTVerify
 	public function handle($request, \Closure $next)
 	{
 		try {
-			$requestHeaders = apache_request_headers();
-			$bearerToken = $requestHeaders['Authorization'];
-			$token = explode(' ', $bearerToken)[1];
+
+			$token = $request->cookie('token');
+
+			if (!$token) {
+				return response()->json([
+					'status' => 401,
+					'message' => 'Authorization Token not present or malformed.'
+				], 401);
+			}
 
 			$key = env('JWT_SECRET');
 
 			JWT::decode($token, new Key($key, 'HS256'));
-
 		} catch (\Exception $e) {
-            dd($e->getMessage());
+			$e->getMessage();
 
 			if ($e instanceof \Firebase\JWT\SignatureInvalidException) {
 				return response()->json([
@@ -54,9 +59,9 @@ class JWTVerify
 			}
 
 			return response()->json([
-				'status' => 404,
+				'status' => 401,
 				'message' => 'Authorization Token not present or malformed.'
-			], 404);
+			], 401);
 		}
 
 		return $next($request);

@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 // use BattleNetRepository;
 class AuthController extends Controller
@@ -35,9 +36,9 @@ class AuthController extends Controller
         $audience = env('APP_URL') . ':' . env('APP_PORT');
 
         $payload = [
-            'battletag'=> $battletag['battletag'],
-            'battletag_id'=> $battletag['battletag_id'],
-            'sub'=> $battletag['sub'],
+            'battletag' => $battletag['battletag'],
+            'battletag_id' => $battletag['battletag_id'],
+            'sub' => $battletag['sub'],
             'iss' => $issuer,
             'aud' => $audience,
             'iat' => $issuedAt,
@@ -49,14 +50,13 @@ class AuthController extends Controller
 
         $jwt = JWT::encode($payload, $key, 'HS256');
 
-        return response()->json([
-            'token' => $jwt,
-            'battletag' => $battletag
-        ]);
+        return response()->json($battletag)->withCookie(cookie('token', $jwt));
     }
 
-    public function test()
+    public function logout(Request $request)
     {
-        return response()->json("did it!");
+       $cookie = Cookie::forget('token');
+
+        return response()->json(['success' => true, 'message' => 'Logged out successfully.'])->withCookie($cookie);
     }
 }
