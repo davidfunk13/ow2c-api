@@ -9,6 +9,7 @@ use App\Http\Controllers\Game\StoreController as StoreGame;
 use App\Http\Controllers\Game\ShowController as GetGame;
 use App\Http\Controllers\Game\IndexController as GetAllGames;
 use App\Http\Controllers\Game\UpdateController as UpdateGame;
+use App\Http\Controllers\Session\DestroyController as DestroySession;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,7 @@ Route::group(['prefix' => 'battletag/{battletag_id}/session', 'middleware' => ['
     Route::post('/', StoreSession::class);
     Route::get('/{session_id}', GetSession::class);
     Route::put('/{session_id}', UpdateSession::class);
+    Route::delete('/{session_id}', DestroySession::class);
 });
 
 Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 'middleware' => ['jwt.verify']], function () {

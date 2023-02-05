@@ -81,4 +81,9 @@ class SessionRepository
 
         return null;
     }
+
+    public function destroy(Session $session): ?bool
+    {
+        return $session->delete();
+    }
 }

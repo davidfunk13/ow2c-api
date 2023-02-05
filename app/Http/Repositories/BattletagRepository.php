@@ -32,8 +32,23 @@ class BattletagRepository
     public function getByBattletagId(string $battletag_id): ?BattletagResource
     {
         $qb = Battletag::query();
-
+        
+        // this is not your uuid. this is blizzard's.
         $battletag = $qb->where('battletag_id', $battletag_id)->first();
+
+        if ($battletag) {
+            return new BattletagResource($battletag);
+        }
+
+        return null;
+    }  
+
+    public function getById(string $battletagUuid): ?BattletagResource
+    {
+        $qb = Battletag::query();
+        
+        // this is not your uuid. this is blizzard's.
+        $battletag = $qb->where('id', $battletagUuid)->first();
 
         if ($battletag) {
             return new BattletagResource($battletag);
