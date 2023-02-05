@@ -3,27 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Http\Repositories\BattleNetRepository;
+use App\Http\Repositories\BattletagRepository;
 use App\Http\Requests\LoginRequest;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
-// use BattleNetRepository;
 class AuthController extends Controller
 {
     protected BattleNetRepository $battleNetRepository;
+    protected BattletagRepository $battletagRepository;
 
-    public function __construct(BattleNetRepository $battleNetRepository)
+    public function __construct(BattleNetRepository $battleNetRepository, BattletagRepository $battletagRepository)
     {
         $this->battleNetRepository = $battleNetRepository;
+        $this->battletagRepository = $battletagRepository;
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $code = $request->get('code');
 
         $battletag = $this->battleNetRepository->bnetAuthHelper($code);
+
+        $exists = $this->battletagRepository->getByBattletagId($battletag['battletag_id']);
+
+        if (!$exists) {
+            $battletag = $this->battletagRepository->store($battletag);
+        }
+
+        if ($exists) {
+            $battletag = $exists;
+        }
 
         $issuedAt = time();
 
@@ -50,17 +63,20 @@ class AuthController extends Controller
 
         $jwt = JWT::encode($payload, $key, 'HS256');
 
-        return response()->json($battletag)->withCookie(cookie('token', $jwt));
+        return response()
+            ->json($battletag)
+            ->withCookie(cookie('token', $jwt));
     }
 
-    public function test(Request $request)
+    public function logout(): JsonResponse
     {
-        return response()->json(['success' => true, 'battletag' => $request->battletag]);
-    }
-    public function logout()
-    {
-       $cookie = Cookie::forget('token');
+        $cookie = Cookie::forget('token');
 
-        return response()->json(['success' => true, 'message' => 'Logged out successfully.'])->withCookie($cookie);
+        return response()
+            ->json([
+                'success' => true,
+                'message' => 'Logged out successfully.
+            '])
+            ->withCookie($cookie);
     }
 }
