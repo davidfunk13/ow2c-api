@@ -53,7 +53,11 @@ class AuthController extends Controller
         return response()->json($battletag)->withCookie(cookie('token', $jwt));
     }
 
-    public function logout(Request $request)
+    public function test(Request $request)
+    {
+        return response()->json(['success' => true, 'battletag' => $request->battletag]);
+    }
+    public function logout()
     {
        $cookie = Cookie::forget('token');
 
