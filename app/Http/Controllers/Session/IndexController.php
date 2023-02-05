@@ -15,7 +15,10 @@ class IndexController extends Controller
         $this->sessionRepository = $sessionRepository;
     }
 
-    public function __invoke(Request $request){
-        return response()->json(['message' => 'all']);
+    public function __invoke(int $battletagId, Request $request){
+        return response()->json([
+            'message' => 'All Sessions',
+            'battletag_id' => $battletagId
+        ]);
     }
 }

@@ -26,16 +26,16 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/logout', [AuthController::class, 'logout'])->middleware('jwt.verify');
 
-Route::group(['prefix' => '/session', 'middleware' => ['jwt.verify']], function () { 
-    Route::post('/', StoreSession::class);
-    Route::get('/{id}', GetSession::class);
+Route::group(['prefix' => 'battletag/{battletag_id}/session', 'middleware' => ['jwt.verify']], function () {
     Route::get('/', GetAllSessions::class);
-    Route::put('/', UpdateSession::class);
+    Route::post('/', StoreSession::class);
+    Route::get('/{session_id}', GetSession::class);
+    Route::put('/{session_id}', UpdateSession::class);
 });
 
-Route::group(['prefix' => '/game', 'middleware' => ['jwt.verify']], function () { 
+Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 'middleware' => ['jwt.verify']], function () {
     Route::post('/', StoreGame::class);
-    Route::get('/{id}', GetGame::class);
+    Route::get('/{game_id}', GetGame::class);
     Route::get('/', GetAllGames::class);
-    Route::put('/', UpdateGame::class);
+    Route::put('/{game_id}', UpdateGame::class);
 });

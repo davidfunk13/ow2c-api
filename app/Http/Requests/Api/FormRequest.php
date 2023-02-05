@@ -34,6 +34,7 @@ abstract class FormRequest extends LaravelFormRequest
      */
     protected function failedValidation(Validator $validator)
     {
+
         $errors = (new ValidationException($validator))->errors();
 
         throw new HttpResponseException(

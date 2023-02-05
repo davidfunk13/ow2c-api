@@ -15,7 +15,11 @@ class UpdateController extends Controller
         $this->gameRepository = $gameRepository;
     }
 
-    public function __invoke(Request $request){
-        return response()->json(['message' => 'fart_message']);
+    public function __invoke(int $battletagId, int $sessionId, Request $request){
+        return response()->json([
+            'message' => 'Update game',
+            'battletag_id' => $battletagId,
+            'session_id' => $sessionId
+        ]);
     }
 }

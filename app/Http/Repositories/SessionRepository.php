@@ -14,4 +14,22 @@ class SessionRepository
         // // // $session->session = $options['session'];
         // $session->sub = $options['sub'];
     }
+
+    public function store(int $battletag_id, array $options): ?Session
+    {
+        $session = new Session();
+
+        $session->battletag_id = $battletag_id;
+
+        $this->setFields($session, $options);
+
+        if ($session->save()) {
+            return $session;
+        }
+
+        // @codeCoverageIgnoreStart
+        return null; // this actually has code coverage through mocks
+        // @codeCoverageIgnoreEnd
+    }
+
 }
