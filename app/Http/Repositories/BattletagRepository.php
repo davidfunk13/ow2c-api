@@ -6,8 +6,6 @@ namespace App\Http\Repositories;
 
 use App\Http\Resources\BattletagResource;
 use App\Models\Battletag;
-use App\Models\Session;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BattletagRepository
 {
@@ -42,27 +40,5 @@ class BattletagRepository
         }
 
         return null;
-    }
-    public function getById(string $id): ?BattletagResource
-    {
-        $qb = Battletag::find($id);
-
-        $battletag = $qb->first();
-
-        if ($battletag) {
-            return new BattletagResource($battletag);
-        }
-
-        return null;
-    }
-
-    public function getBattletagSessions(string $id): ?HasMany
-    {
-        $qb = Battletag::query();
-
-        $battletag = $qb->where('battletag_id', $id)->first();
-
-        return $battletag?->sessions;
-
-    }
+    }  
 }

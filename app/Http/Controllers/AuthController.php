@@ -6,9 +6,7 @@ use App\Http\Repositories\BattleNetRepository;
 use App\Http\Repositories\BattletagRepository;
 use App\Http\Requests\LoginRequest;
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller

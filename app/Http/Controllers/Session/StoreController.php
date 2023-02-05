@@ -8,7 +8,6 @@ use App\Http\Controllers\NotFoundResponseTrait;
 use App\Http\Repositories\SessionRepository;
 use App\Http\Requests\Session\StoreRequest;
 use App\Http\Resources\SessionResource;
-use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class StoreController extends Controller
@@ -33,9 +32,5 @@ class StoreController extends Controller
         }
 
         return new SessionResource($session);
-//        return response()->json([
-//            'message' => 'Store Session',
-//            'battletag_id' => $battletagId
-//        ]);
     }
 }

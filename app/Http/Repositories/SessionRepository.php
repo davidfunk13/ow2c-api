@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Repositories;
 
+use App\Http\Controllers\NotFoundResponseTrait;
 use App\Http\Resources\Session\SessionCollection;
+use App\Http\Resources\SessionResource;
+use App\Models\Battletag;
 use App\Models\Session;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Http\JsonResponse;
 
 class SessionRepository
 {
+    use NotFoundResponseTrait;
+
     public function setFields(Session &$session, array $options): void
     {
         $session->name = $options['name'];
@@ -36,33 +41,44 @@ class SessionRepository
         return null;
     }
 
-//    public function getListByBattletagId(int $battletag_id, array $options): SessionCollection
-//    {
-//        $qb = Session::query();
-//
-//        $sessions = $qb->where('battletag_id', $battletag_id)->get();
-//
-//        return new SessionCollection($sessions);
-//    }
+    public function getListByBattletagId(string $battletag_id)
+    {
+        $qb = Session::query();
 
-//    public function getById(string $session_id, array $options): ?Session
-//    {
-//        $session = Session::find($session_id);
-//
-//        if ($session) {
-//            return $session;
-//        }
-//
-//        return null;
-//    }
-//    public function getSessionBattletag(string $session_id, array $options): ?BelongsTo
-//    {
-//        $session = Session::find($session_id);
-//
-//        if ($session) {
-//            return $session->battletag;
-//        }
-//
-//        return null;
-//    }
+        $sessions = $qb->where('battletag_id', $battletag_id)->get();
+
+        return $sessions;
+    }
+
+    public function getById(string $battletagId, string $sessionId): Session|JsonResponse|null
+    {
+        $battletagQb = Battletag::query();
+
+        $battletag = $battletagQb->where('id', $battletagId)->first();
+
+        if (!$battletag) {
+            return null;
+        }
+
+        $sessionQb = Session::query();
+
+        $session = $sessionQb->where('battletag_id', $battletagId)->where('id', $sessionId)->first();
+
+        if (!$session) {
+            return null;
+        }
+
+        return $session;
+    }
+
+    public function updateSession(Session $session, array $options): ?Session
+    {
+        $this->setFields($session, $options);
+
+        if ($session->save()) {
+            return $session;
+        }
+
+        return null;
+    }
 }

@@ -14,7 +14,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['integer', 'required']
+            // 'id' => ['string', 'required'],
+            // 'battletag_id' => ['string', 'required'],
+            'name' => ['string', 'required'],
+            'total_wins' => ['integer', 'required'],
+            'wins' => ['integer', 'required'],
+            'losses' => ['integer', 'required'],
+            'draws' => ['integer', 'required'],
+            'total_games' => ['integer', 'required'],
         ];
     }
 }

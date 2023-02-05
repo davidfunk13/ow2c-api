@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Session;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\SessionRepository;
 use App\Http\Resources\Session\SessionCollection;
-use Illuminate\Http\Request;
 use App\Http\Controllers\ServerErrorResponseTrait;
+use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends Controller
 
@@ -19,14 +19,14 @@ class IndexController extends Controller
         $this->sessionRepository = $sessionRepository;
     }
 
-    public function __invoke(int $battletagId, Request $request): SessionCollection
+    public function __invoke(string $battletagId): SessionCollection | Response
     {
         try {
-            $session = $this->sessionRepository->getByBattletagId($battletagId, $request->all());
+            $sessions = $this->sessionRepository->getListByBattletagId($battletagId);
         } catch (\Throwable $exception) {
             return $this->internalServerError('Something went wrong');
         }
 
-        return new SessionCollection($session);
+        return new SessionCollection($sessions);
     }
 }

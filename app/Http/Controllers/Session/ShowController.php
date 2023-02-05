@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Session;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotFoundResponseTrait;
 use App\Http\Repositories\BattletagRepository;
 use App\Http\Repositories\SessionRepository;
-use App\Http\Requests\Session\ShowRequest;
-use App\Http\Resources\BattletagResource;
-use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\SessionResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ShowController extends Controller
 {
+    use NotFoundResponseTrait;
     protected SessionRepository $sessionRepository;
     protected BattletagRepository $battletagRepository;
 
@@ -22,12 +22,14 @@ class ShowController extends Controller
         $this->battletagRepository = $battletagRepository;
     }
 
-    public function __invoke(string $battletagId, string $sessionId, Request $request)
+    public function __invoke(string $battletagId, string $sessionId, Request $request): SessionResource | JsonResponse
     {
-//        $session = $this->sessionRepository->getById($sessionId, $request->all());
-      $session = $this->battletagRepository->getBattletagSessions($battletagId);
+        $session = $this->sessionRepository->getById($battletagId, $sessionId);
+        
+        if(!$session){
+           return $this->resourceNotFound('Session');
+        }
 
-
-        return response()->json($session);
+        return new SessionResource($session);
     }
 }
