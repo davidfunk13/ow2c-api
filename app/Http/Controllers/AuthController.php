@@ -29,7 +29,7 @@ class AuthController extends Controller
         $exists = $this->battletagRepository->getByBattletagId($battletag['battletag_id']);
 
         if (!$exists) {
-            $battletag = $this->battletagRepository->store($battletag);
+            $battletag = $this->battletagRepository->store($battletag);            
         }
 
         if ($exists) {
@@ -48,6 +48,7 @@ class AuthController extends Controller
 
         $payload = [
             'battletag' => $battletag['battletag'],
+            'id' => $battletag['id'],
             'battletag_id' => $battletag['battletag_id'],
             'sub' => $battletag['sub'],
             'iss' => $issuer,
