@@ -59,8 +59,9 @@ class AuthController extends Controller
         ];
 
         $key = env('JWT_SECRET');
-
+        JWT::$leeway=50;
         $jwt = JWT::encode($payload, $key, 'HS256');
+        
 
         return response()
             ->json($battletag)

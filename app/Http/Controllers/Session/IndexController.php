@@ -19,10 +19,10 @@ class IndexController extends Controller
         $this->sessionRepository = $sessionRepository;
     }
 
-    public function __invoke(string $battletagId): SessionCollection | Response
+    public function __invoke(string $id): SessionCollection | Response
     {
         try {
-            $sessions = $this->sessionRepository->getListByBattletagId($battletagId);
+            $sessions = $this->sessionRepository->getSessionsByBattletagId($id);
         } catch (\Throwable $exception) {
             return $this->internalServerError('Something went wrong');
         }

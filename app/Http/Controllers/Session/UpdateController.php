@@ -40,7 +40,6 @@ class UpdateController extends Controller
 
             $updated = $this->sessionRepository->updateSession($session, $options);
         } catch (\Throwable $exception) {
-            dd($exception->getMessage());
             return $this->internalServerError('Session could not be updated');
         }
 

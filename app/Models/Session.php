@@ -27,9 +27,4 @@ class Session extends Model
     {
         return $this->belongsTo(Battletag::class);
     }
-    public function games(): HasMany
-    {
-        return $this->hasMany(Game::class);
-    }
-
 }

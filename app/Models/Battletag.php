@@ -22,8 +22,4 @@ class Battletag extends Model
     {
         return $this->hasMany(Session::class);
     }
-    public function games(): HasMany
-    {
-        return $this->hasMany(Game::class);
-    }
 }

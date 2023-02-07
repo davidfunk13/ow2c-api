@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Repositories;
 
 use App\Http\Controllers\NotFoundResponseTrait;
-use App\Http\Resources\Session\SessionCollection;
-use App\Http\Resources\SessionResource;
 use App\Models\Battletag;
 use App\Models\Session;
 use Illuminate\Http\JsonResponse;
@@ -18,19 +16,19 @@ class SessionRepository
     public function setFields(Session &$session, array $options): void
     {
         $session->name = $options['name'];
-        $session->total_wins = $options['total_wins'] ?? 0;
-        $session->wins = $options['wins'] ?? 0;
-        $session->losses = $options['losses'] ?? 0;
-        $session->draws = $options['draws'] ?? 0;
-        $session->battletag_id = $options['battletag_id'];
-        $session->total_games = $options['total_games'] ?? 0;
     }
 
     public function store(string $battletag_id, array $options): ?Session
     {
-        $options['battletag_id'] = $battletag_id;
-
         $session = new Session();
+
+        $battletag = Battletag::find($battletag_id);
+        
+        if(!$battletag){
+            $this->resourceNotFound("Battletag");
+        }
+
+        $session->battletag_id = $battletag->id;
 
         $this->setFields($session, $options);
 
@@ -40,14 +38,11 @@ class SessionRepository
 
         return null;
     }
-
-    public function getListByBattletagId(string $battletag_id)
+    public function getSessionsByBattletagId(string $battletag_id)
     {
-        $qb = Session::query();
-
-        $sessions = $qb->where('battletag_id', $battletag_id)->get();
-
-        return $sessions;
+        $battletag = Battletag::find($battletag_id);
+        
+        return $battletag->sessions;
     }
 
     public function getById(string $battletagId, string $sessionId): Session|JsonResponse|null
