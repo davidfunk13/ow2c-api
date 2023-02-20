@@ -62,7 +62,6 @@ class AuthController extends Controller
 
         $jwt = JWT::encode($payload, $key, 'HS256');
         
-
         return response()
             ->json($battletag)
             ->withCookie(cookie('token', $jwt));
