@@ -15,7 +15,7 @@ class BattleNetRepository
 {
     public function setFields(Battletag &$battletag, array $options): void
     {
-        $battletag->battletag_id = $options['battletag_id'];
+        $battletag->blizz_id = $options['blizz_id'];
         $battletag->battletag = $options['battletag'];
         $battletag->sub = $options['sub'];
     }
@@ -34,7 +34,7 @@ class BattleNetRepository
                 'code' => $code
             ]
         ];
-
+        JWT::$leeway = 6000;
         $token_uri = env('BLIZZ_TOKEN_URI');
 
         $identity_keys_uri = env('BLIZZ_IDENTITY_URI');
@@ -65,7 +65,7 @@ class BattleNetRepository
 
         return [
             'battletag' => $decoded->battle_tag,
-            'battletag_id' => intval($decoded->sub),
+            'blizz_id' => intval($decoded->sub),
             'sub' => $decoded->sub,
         ];
     }

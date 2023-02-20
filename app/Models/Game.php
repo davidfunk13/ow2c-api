@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Game extends Model
 {
     use HasFactory;
-    use HasUuids;
     public function session(): BelongsTo
     {
         return $this->belongsTo(Session::class);

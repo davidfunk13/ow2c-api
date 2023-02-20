@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Battletag;
+use App\Models\Session;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,29 +12,26 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('battletags', function (Blueprint $table) {
+        Schema::create('games', function (Blueprint $table) {
             $table->id('id');
-            $table->string('battletag');
-            $table->integer('blizz_id');
-            $table->string('sub');
-            $table->timestamps();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->id('id');
-            $table->string('name');
+            $table->integer('result');
             $table->timestamps();
             $table->foreignIdFor(Battletag::class);
-        
+            $table->foreignIdFor(Session::class);
+
             $table->foreign('battletag_id')
                 ->references('id')
                 ->on('battletags')
                 ->onDelete('cascade');
 
+                $table->foreign('session_id')
+                ->references('id')
+                ->on('sessions')
+                ->onDelete('cascade');
+
         });
-        
     }
 
     /**
@@ -41,10 +39,8 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('sessions');
-        Schema::dropIfExists('battletags');
-
+        //
     }
 };

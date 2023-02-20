@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         $battletag = $this->battleNetRepository->bnetAuthHelper($code);
 
-        $exists = $this->battletagRepository->getByBattletagId($battletag['battletag_id']);
+        $exists = $this->battletagRepository->getByBattletagId($battletag['blizz_id']);
 
         if (!$exists) {
             $battletag = $this->battletagRepository->store($battletag);            
@@ -49,7 +49,7 @@ class AuthController extends Controller
         $payload = [
             'battletag' => $battletag['battletag'],
             'id' => $battletag['id'],
-            'battletag_id' => $battletag['battletag_id'],
+            'blizz_id' => $battletag['blizz_id'],
             'sub' => $battletag['sub'],
             'iss' => $issuer,
             'aud' => $audience,
@@ -59,7 +59,7 @@ class AuthController extends Controller
         ];
 
         $key = env('JWT_SECRET');
-        JWT::$leeway=50;
+
         $jwt = JWT::encode($payload, $key, 'HS256');
         
 

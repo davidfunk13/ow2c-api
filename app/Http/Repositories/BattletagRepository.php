@@ -13,7 +13,7 @@ class BattletagRepository
     {
 
         $battletag->battletag = $options['battletag'];
-        $battletag->battletag_id = $options['battletag_id'];
+        $battletag->blizz_id = $options['blizz_id'];
         $battletag->sub = $options['sub'];
     }
 
@@ -30,12 +30,12 @@ class BattletagRepository
         return null;
     }
 
-    public function getByBattletagId(string $battletag_id): ?BattletagResource
+    public function getByBattletagId(string $blizz_id): ?BattletagResource
     {
         $qb = Battletag::query();
         
         // this is not your uuid. this is blizzard's.
-        $battletag = $qb->where('battletag_id', $battletag_id)->first();
+        $battletag = $qb->where('blizz_id', $blizz_id)->first();
 
         if ($battletag) {
             return new BattletagResource($battletag);
