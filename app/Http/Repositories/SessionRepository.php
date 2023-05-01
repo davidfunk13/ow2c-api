@@ -22,9 +22,11 @@ class SessionRepository
     {
         $session = new Session();
 
-        $battletag = Battletag::find($battletag_id);
-        
-        if(!$battletag){
+        $battletag = new Battletag();
+
+        $battletag = $battletag->get()->where("id", $battletag_id)->first();
+
+        if (!$battletag) {
             $this->resourceNotFound("Battletag");
         }
 
@@ -40,12 +42,14 @@ class SessionRepository
     }
     public function getSessionsByBattletagId(string $battletag_id)
     {
-        $battletag = Battletag::find($battletag_id);
-        
+        $battletag = new Battletag();
+
+        $battletag = $battletag->get()->where("id", $battletag_id)->first();
+
         return $battletag->sessions;
     }
 
-    public function getById(string $battletagId, string $sessionId): Session|JsonResponse|null
+    public function getById(string $battletagId, string $sessionId): ?Session
     {
         $battletagQb = Battletag::query();
 
@@ -59,11 +63,11 @@ class SessionRepository
 
         $session = $sessionQb->where('battletag_id', $battletagId)->where('id', $sessionId)->first();
 
-        if (!$session) {
-            return null;
+        if ($session) {
+            return $session;
         }
 
-        return $session;
+        return null;
     }
 
     public function updateSession(Session $session, array $options): ?Session

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Session;
 
+use App\Http\Collections\SessionCollection;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\SessionRepository;
-use App\Http\Resources\Session\SessionCollection;
 use App\Http\Controllers\ServerErrorResponseTrait;
 use Symfony\Component\HttpFoundation\Response;
 

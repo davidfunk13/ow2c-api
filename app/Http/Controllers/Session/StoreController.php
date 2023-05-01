@@ -22,12 +22,11 @@ class StoreController extends Controller
         $this->sessionRepository = $sessionRepository;
     }
 
-    public function __invoke(string $battletagId, StoreRequest $request): Response|SessionResource
+    public function __invoke(string $battletag_id, StoreRequest $request): Response | SessionResource
     {
         try {
-            $session = $this->sessionRepository->store($battletagId, $request->all());
+            $session = $this->sessionRepository->store($battletag_id, $request->all());
         } catch (\Throwable $exception) {
-            echo $exception->getMessage();
             return $this->internalServerError('Session could not save to DB');
         }
 

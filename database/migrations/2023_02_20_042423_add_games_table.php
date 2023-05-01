@@ -17,20 +17,21 @@ return new class extends Migration {
         Schema::create('games', function (Blueprint $table) {
             $table->id('id');
             $table->integer('result');
-            $table->timestamps();
+            $table->string('location');
             $table->foreignIdFor(Battletag::class);
             $table->foreignIdFor(Session::class);
-
+            
             $table->foreign('battletag_id')
-                ->references('id')
-                ->on('battletags')
-                ->onDelete('cascade');
-
-                $table->foreign('session_id')
-                ->references('id')
-                ->on('sessions')
-                ->onDelete('cascade');
-
+            ->references('id')
+            ->on('battletags')
+            ->onDelete('cascade');
+            
+            $table->foreign('session_id')
+            ->references('id')
+            ->on('sessions')
+            ->onDelete('cascade');
+            
+            $table->timestamps();
         });
     }
 
@@ -41,6 +42,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('games');
     }
 };

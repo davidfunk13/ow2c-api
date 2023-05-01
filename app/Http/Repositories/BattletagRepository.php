@@ -11,7 +11,6 @@ class BattletagRepository
 {
     public function setFields(Battletag &$battletag, array $options): void
     {
-
         $battletag->battletag = $options['battletag'];
         $battletag->blizz_id = $options['blizz_id'];
         $battletag->sub = $options['sub'];

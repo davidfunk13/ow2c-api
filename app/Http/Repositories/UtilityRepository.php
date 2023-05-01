@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Repositories;
 
-use App\Http\Controllers\NotFoundResponseTrai;
 use App\Http\Controllers\NotFoundResponseTrait;
-use App\Http\Resources\Session\SessionCollection;
-use App\Http\Resources\SessionResource;
-use App\Models\Battletag;
 use App\Models\Session;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Http\JsonResponse;
 
 class SessionRepository
 {
