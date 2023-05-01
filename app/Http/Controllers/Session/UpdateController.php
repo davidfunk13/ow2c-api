@@ -8,9 +8,7 @@ use App\Http\Controllers\ServerErrorResponseTrait;
 use App\Http\Repositories\BattletagRepository;
 use App\Http\Repositories\SessionRepository;
 use App\Http\Requests\Session\UpdateRequest as UpdateSessionRequest;
-use App\Http\Resources\BattletagResource;
 use App\Http\Resources\SessionResource;
-use Illuminate\Http\Request;
 
 class UpdateController extends Controller
 {

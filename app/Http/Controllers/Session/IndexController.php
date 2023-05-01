@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Session;
 
-use App\Http\Collections\SessionCollection;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\SessionRepository;
 use App\Http\Controllers\ServerErrorResponseTrait;
+use App\Http\Resources\SessionCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends Controller
-
 {
     protected SessionRepository $sessionRepository;
     use ServerErrorResponseTrait;
@@ -24,7 +23,8 @@ class IndexController extends Controller
         try {
             $sessions = $this->sessionRepository->getSessionsByBattletagId($id);
         } catch (\Throwable $exception) {
-            return $this->internalServerError('Something went wrong');
+
+            return $this->internalServerError($exception->getMessage());
         }
 
         return new SessionCollection($sessions);

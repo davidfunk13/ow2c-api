@@ -14,9 +14,7 @@ class StoreController extends Controller
 {
     use NotFoundResponseTrait;
     use ServerErrorResponseTrait;
-
     protected SessionRepository $sessionRepository;
-
     public function __construct(SessionRepository $sessionRepository)
     {
         $this->sessionRepository = $sessionRepository;

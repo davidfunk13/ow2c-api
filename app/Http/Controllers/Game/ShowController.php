@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Game;
 
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\GameRepository;
-use Illuminate\Http\Request;
+use App\Http\Resources\GameResource;
 
 class ShowController extends Controller
 {
@@ -15,12 +15,14 @@ class ShowController extends Controller
         $this->gameRepository = $gameRepository;
     }
 
-    public function __invoke(int $battletagId, int $sessionId, Request $request)
+    public function __invoke(string $battletag_id, string $session_id, string $game_id)
     {
-        return response()->json([
-            'message' => 'Show game',
-            'battletag_id' => $battletagId,
-            'session_id' => $sessionId
-        ]);
+        $game = $this->gameRepository->getById($battletag_id, $session_id, $game_id);
+        
+        if(!$game){
+           return $this->resourceNotFound('Session');
+        }
+
+        return new GameResource($game);
     }
 }

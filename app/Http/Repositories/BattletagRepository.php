@@ -16,20 +16,20 @@ class BattletagRepository
         $battletag->sub = $options['sub'];
     }
 
-    public function store(array $options): ?BattletagResource
+    public function store(array $options): ?Battletag
     {
         $battletag = new Battletag();
 
         $this->setFields($battletag, $options);
 
         if ($battletag->save()) {
-            return new BattletagResource($battletag);
+            return $battletag;
         }
 
         return null;
     }
 
-    public function getByBattletagId(string $blizz_id): ?BattletagResource
+    public function getByBattletagId(string $blizz_id): ?Battletag
     {
         $qb = Battletag::query();
         
@@ -37,21 +37,21 @@ class BattletagRepository
         $battletag = $qb->where('blizz_id', $blizz_id)->first();
 
         if ($battletag) {
-            return new BattletagResource($battletag);
+            return $battletag;
         }
 
         return null;
     }  
 
-    public function getById(string $battletagUuid): ?BattletagResource
+    public function getById(string $battletag_id): ?Battletag
     {
         $qb = Battletag::query();
         
         // this is not your uuid. this is blizzard's.
-        $battletag = $qb->where('id', $battletagUuid)->first();
+        $battletag = $qb->where('id', $battletag_id)->first();
 
         if ($battletag) {
-            return new BattletagResource($battletag);
+            return $battletag;
         }
 
         return null;

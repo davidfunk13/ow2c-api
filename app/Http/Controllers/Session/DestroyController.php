@@ -7,10 +7,7 @@ use App\Http\Controllers\NotFoundResponseTrait;
 use App\Http\Controllers\ServerErrorResponseTrait;
 use App\Http\Repositories\BattletagRepository;
 use App\Http\Repositories\SessionRepository;
-use App\Http\Resources\BattletagResource;
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class DestroyController extends Controller
 {
@@ -28,12 +25,6 @@ class DestroyController extends Controller
 
     public function __invoke(string $battletagId, string $sessionId)
     {
-        $battletag = $this->battletagRepository->getById($battletagId);
-
-        if (!$battletag) {
-            return $this->resourceNotFound('Battletag');
-        }
-
         $session = $this->sessionRepository->getById($battletagId, $sessionId);
 
         if (!$session) {

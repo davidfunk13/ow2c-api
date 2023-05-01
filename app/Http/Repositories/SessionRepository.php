@@ -7,7 +7,7 @@ namespace App\Http\Repositories;
 use App\Http\Controllers\NotFoundResponseTrait;
 use App\Models\Battletag;
 use App\Models\Session;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Collection;
 
 class SessionRepository
 {
@@ -19,17 +19,15 @@ class SessionRepository
     }
 
     public function store(string $battletag_id, array $options): ?Session
-    {
-        $session = new Session();
-
-        $battletag = new Battletag();
-
-        $battletag = $battletag->get()->where("id", $battletag_id)->first();
-
+    {        
+        $battletag = Battletag::find($battletag_id)->first();
+        
         if (!$battletag) {
             $this->resourceNotFound("Battletag");
         }
-
+        
+        $session = new Session();
+        
         $session->battletag_id = $battletag->id;
 
         $this->setFields($session, $options);
@@ -40,29 +38,21 @@ class SessionRepository
 
         return null;
     }
-    public function getSessionsByBattletagId(string $battletag_id)
+    public function getSessionsByBattletagId(string $battletag_id): Collection
     {
-        $battletag = new Battletag();
+        $battletag = Battletag::find($battletag_id)->first();
 
-        $battletag = $battletag->get()->where("id", $battletag_id)->first();
+        if(!$battletag){
+            $this->resourceNotFound("Battletag");
+        }
 
         return $battletag->sessions;
     }
 
-    public function getById(string $battletagId, string $sessionId): ?Session
+    public function getById(string $battletag_id, string $session_id): ?Session
     {
-        $battletagQb = Battletag::query();
-
-        $battletag = $battletagQb->where('id', $battletagId)->first();
-
-        if (!$battletag) {
-            return null;
-        }
-
-        $sessionQb = Session::query();
-
-        $session = $sessionQb->where('battletag_id', $battletagId)->where('id', $sessionId)->first();
-
+        $session = Session::find($session_id)->where('battletag_id', $battletag_id)->first();
+        
         if ($session) {
             return $session;
         }

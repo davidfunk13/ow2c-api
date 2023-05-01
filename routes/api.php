@@ -37,9 +37,10 @@ Route::group(['prefix' => 'battletag/{battletag_id}/session', 'middleware' => ['
     Route::delete('/{session_id}', DestroySession::class);
 });
 
-Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 'middleware' => ['jwt.verify']], function () {
+Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 
+'middleware' => ['jwt.verify']], function () {
+    Route::get('/', GetAllGames::class);
     Route::post('/', StoreGame::class);
     Route::get('/{game_id}', GetGame::class);
-    Route::get('/', GetAllGames::class);
     Route::put('/{game_id}', UpdateGame::class);
 });
