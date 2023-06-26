@@ -28,15 +28,6 @@ use App\Http\Controllers\Session\DestroyController as DeleteSession;
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/logout', [AuthController::class, 'logout'])->middleware('jwt.verify');
-//game routes
-Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 
-'middleware' => ['jwt.verify']], function () {
-    Route::delete('/{game_id}', DeleteGame::class);
-    Route::get('/{game_id}', GetGame::class);
-    Route::put('/{game_id}', UpdateGame::class);
-    Route::post('/', StoreGame::class);
-    Route::get('/', GetAllGames::class);
-});
 
 // session routes
 Route::group(['prefix' => 'battletag/{battletag_id}/session', 'middleware' => ['jwt.verify']], function () {
@@ -47,3 +38,12 @@ Route::group(['prefix' => 'battletag/{battletag_id}/session', 'middleware' => ['
     Route::delete('/{session_id}', DeleteSession::class);
 });
 
+//game routes
+Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 
+'middleware' => ['jwt.verify']], function () {
+    Route::delete('/{game_id}', DeleteGame::class);
+    Route::get('/{game_id}', GetGame::class);
+    Route::put('/{game_id}', UpdateGame::class);
+    Route::post('/', StoreGame::class);
+    Route::get('/', GetAllGames::class);
+});
