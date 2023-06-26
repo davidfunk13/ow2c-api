@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Game;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotFoundResponseTrait;
 use App\Http\Repositories\GameRepository;
 use App\Http\Resources\GameResource;
 
 class ShowController extends Controller
 {
+
+    use NotFoundResponseTrait;
     protected GameRepository $gameRepository;
 
     public function __construct(GameRepository $gameRepository)

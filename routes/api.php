@@ -1,16 +1,18 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Session\StoreController as StoreSession;
-use App\Http\Controllers\Session\ShowController as GetSession;
-use App\Http\Controllers\Session\IndexController as GetAllSessions;
-use App\Http\Controllers\Session\UpdateController as UpdateSession;
-use App\Http\Controllers\Game\StoreController as StoreGame;
-use App\Http\Controllers\Game\ShowController as GetGame;
-use App\Http\Controllers\Game\IndexController as GetAllGames;
-use App\Http\Controllers\Game\UpdateController as UpdateGame;
-use App\Http\Controllers\Session\DestroyController as DestroySession;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Game\IndexController as GetAllGames;
+use App\Http\Controllers\Game\StoreController as StoreGame;
+use App\Http\Controllers\Game\UpdateController as UpdateGame;
+use App\Http\Controllers\Game\ShowController as GetGame;
+use App\Http\Controllers\Game\DestroyController as DeleteGame;
+use App\Http\Controllers\Session\IndexController as GetAllSessions;
+use App\Http\Controllers\Session\StoreController as StoreSession;
+use App\Http\Controllers\Session\UpdateController as UpdateSession;
+use App\Http\Controllers\Session\ShowController as GetSession;
+use App\Http\Controllers\Session\DestroyController as DeleteSession;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +28,15 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/logout', [AuthController::class, 'logout'])->middleware('jwt.verify');
-
+//game routes
+Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 
+'middleware' => ['jwt.verify']], function () {
+    Route::delete('/{game_id}', DeleteGame::class);
+    Route::get('/{game_id}', GetGame::class);
+    Route::put('/{game_id}', UpdateGame::class);
+    Route::post('/', StoreGame::class);
+    Route::get('/', GetAllGames::class);
+});
 
 // session routes
 Route::group(['prefix' => 'battletag/{battletag_id}/session', 'middleware' => ['jwt.verify']], function () {
@@ -34,13 +44,6 @@ Route::group(['prefix' => 'battletag/{battletag_id}/session', 'middleware' => ['
     Route::post('/', StoreSession::class);
     Route::get('/{session_id}', GetSession::class);
     Route::put('/{session_id}', UpdateSession::class);
-    Route::delete('/{session_id}', DestroySession::class);
+    Route::delete('/{session_id}', DeleteSession::class);
 });
 
-Route::group(['prefix' => 'battletag/{battletag_id}/session/{session_id}/game', 
-'middleware' => ['jwt.verify']], function () {
-    Route::get('/', GetAllGames::class);
-    Route::post('/', StoreGame::class);
-    Route::get('/{game_id}', GetGame::class);
-    Route::put('/{game_id}', UpdateGame::class);
-});

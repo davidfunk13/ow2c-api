@@ -21,16 +21,6 @@ return new class extends Migration {
             $table->foreignIdFor(Battletag::class);
             $table->foreignIdFor(Session::class);
             
-            $table->foreign('battletag_id')
-            ->references('id')
-            ->on('battletags')
-            ->onDelete('cascade');
-            
-            $table->foreign('session_id')
-            ->references('id')
-            ->on('sessions')
-            ->onDelete('cascade');
-            
             $table->timestamps();
         });
     }

@@ -44,7 +44,7 @@ class GameRepository
 
     public function getById(string $battletag_id, string $session_id, string $game_id): ?Game
     {
-        $game = Game::find($game_id)->where('battletag_id', $battletag_id)->where('session_id', $session_id)->first();
+        $game = Game::find($game_id);        
 
         if (!$game) {
             return null;
