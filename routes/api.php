@@ -6,7 +6,8 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\PlaySessionController;
 use Illuminate\Support\Facades\Route;
 
-// Public reference data
+// Public
+Route::post('/auth/exchange', [AuthController::class, 'exchange'])->middleware('throttle:10,1');
 Route::get('/heroes', [HeroController::class, 'index']);
 Route::get('/maps', [MapController::class, 'index']);
 

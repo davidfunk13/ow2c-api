@@ -5,10 +5,11 @@ namespace Database\Factories;
 use App\Enums\Role;
 use App\Enums\TeamSide;
 use App\Models\Game;
+use App\Models\GamePlayer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GamePlayer>
+ * @extends Factory<GamePlayer>
  */
 class GamePlayerFactory extends Factory
 {

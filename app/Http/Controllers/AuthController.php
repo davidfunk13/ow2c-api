@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\AbstractProvider;
 
 class AuthController extends Controller
 {
@@ -18,7 +20,7 @@ class AuthController extends Controller
         // Store state -> platform mapping in cache (expires in 10 minutes)
         Cache::put("oauth_state:{$state}", $platform, now()->addMinutes(10));
 
-        /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+        /** @var AbstractProvider $driver */
         $driver = Socialite::driver('battlenet');
 
         return $driver
@@ -43,7 +45,7 @@ class AuthController extends Controller
         }
 
         try {
-            /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+            /** @var AbstractProvider $driver */
             $driver = Socialite::driver('battlenet');
 
             /** @var \Laravel\Socialite\Two\User $battlenetUser */
@@ -59,16 +61,17 @@ class AuthController extends Controller
                 ]
             );
 
-            $token = $user->createToken('app')->plainTextToken;
+            $code = Str::random(40);
+            Cache::put("auth_code:{$code}", $user->id, now()->addSeconds(60));
 
             $redirectUrl = $platform === 'web'
                 ? config('services.auth.redirect_web')
                 : config('services.auth.redirect_mobile');
 
-            return redirect($redirectUrl.'?token='.$token);
+            return redirect($redirectUrl.'?code='.$code);
 
         } catch (\Exception $e) {
-            \Log::error('OAuth callback failed', [
+            Log::error('OAuth callback failed', [
                 'message' => $e->getMessage(),
                 'exception' => get_class($e),
                 'file' => $e->getFile(),
@@ -79,6 +82,31 @@ class AuthController extends Controller
 
             return $this->redirectWithError($platform, 'auth_failed');
         }
+    }
+
+    public function exchange(Request $request)
+    {
+        $code = $request->input('code');
+
+        if (! $code) {
+            return response()->json(['message' => 'Missing code'], 422);
+        }
+
+        $userId = Cache::pull("auth_code:{$code}");
+
+        if (! $userId) {
+            return response()->json(['message' => 'Invalid or expired code'], 401);
+        }
+
+        $user = User::find($userId);
+
+        if (! $user) {
+            return response()->json(['message' => 'Invalid or expired code'], 401);
+        }
+
+        return response()->json([
+            'token' => $user->createToken('app')->plainTextToken,
+        ]);
     }
 
     private function redirectWithError(string $platform, string $error)

@@ -4,10 +4,11 @@ namespace Database\Factories;
 
 use App\Enums\GameResult;
 use App\Models\Game;
+use App\Models\GameRound;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GameRound>
+ * @extends Factory<GameRound>
  */
 class GameRoundFactory extends Factory
 {

@@ -74,7 +74,7 @@ class AuthControllerTest extends TestCase
         $response = $this->get("/auth/battlenet/callback?state={$state}&code=test_code");
 
         $response->assertRedirect();
-        $this->assertStringContainsString('http://localhost:8081/auth/callback?token=', $response->headers->get('Location'));
+        $this->assertStringContainsString('http://localhost:8081/auth/callback?code=', $response->headers->get('Location'));
 
         $this->assertDatabaseHas('users', [
             'battlenet_id' => '12345678',
@@ -108,7 +108,7 @@ class AuthControllerTest extends TestCase
         $response = $this->get("/auth/battlenet/callback?state={$state}&code=test_code");
 
         $response->assertRedirect();
-        $this->assertStringContainsString('owc://auth/callback?token=', $response->headers->get('Location'));
+        $this->assertStringContainsString('owc://auth/callback?code=', $response->headers->get('Location'));
 
         $this->assertDatabaseHas('users', [
             'battlenet_id' => '87654321',
@@ -241,6 +241,87 @@ class AuthControllerTest extends TestCase
         $response->assertRedirect();
         $this->assertStringContainsString('error=auth_failed', $response->headers->get('Location'));
         $this->assertStringContainsString('owc://auth/callback', $response->headers->get('Location'));
+    }
+
+    public function test_callback_treats_expired_state_as_invalid(): void
+    {
+        config(['services.auth.redirect_web' => 'http://localhost:8081/auth/callback']);
+
+        Cache::put('oauth_state:expired_state', 'web', now()->addMinutes(10));
+        $this->travel(11)->minutes();
+
+        $response = $this->get('/auth/battlenet/callback?state=expired_state');
+
+        $response->assertRedirect();
+        $this->assertStringContainsString('error=invalid_state', $response->headers->get('Location'));
+    }
+
+    public function test_callback_redirects_non_web_platform_to_mobile(): void
+    {
+        $state = 'test_state_android';
+        Cache::put("oauth_state:{$state}", 'android', now()->addMinutes(10));
+
+        config(['services.auth.redirect_mobile' => 'owc://auth/callback']);
+
+        $socialiteUser = Mockery::mock(SocialiteUser::class);
+        $socialiteUser->shouldReceive('getId')->andReturn('55667788');
+        $socialiteUser->shouldReceive('getRaw')->andReturn([
+            'sub' => 'android-sub-uuid',
+            'battletag' => 'AndroidPlayer#9012',
+        ]);
+
+        Socialite::shouldReceive('driver')
+            ->with('battlenet')
+            ->andReturnSelf();
+        Socialite::shouldReceive('stateless')
+            ->andReturnSelf();
+        Socialite::shouldReceive('user')
+            ->andReturn($socialiteUser);
+
+        $response = $this->get("/auth/battlenet/callback?state={$state}&code=test_code");
+
+        $response->assertRedirect();
+        $this->assertStringContainsString('owc://auth/callback?code=', $response->headers->get('Location'));
+    }
+
+    public function test_exchange_returns_a_working_token_for_a_valid_code(): void
+    {
+        $user = User::factory()->create(['battletag' => 'Exchanger#4242']);
+        Cache::put('auth_code:valid_code', $user->id, now()->addSeconds(60));
+
+        $response = $this->postJson('/api/auth/exchange', ['code' => 'valid_code']);
+
+        $response->assertOk();
+        $token = $response->json('token');
+        $this->assertNotEmpty($token);
+
+        $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/auth/user')
+            ->assertOk()
+            ->assertJson(['battletag' => 'Exchanger#4242']);
+    }
+
+    public function test_exchange_code_is_single_use(): void
+    {
+        $user = User::factory()->create();
+        Cache::put('auth_code:once_code', $user->id, now()->addSeconds(60));
+
+        $this->postJson('/api/auth/exchange', ['code' => 'once_code'])->assertOk();
+        $this->postJson('/api/auth/exchange', ['code' => 'once_code'])->assertUnauthorized();
+    }
+
+    public function test_exchange_returns_401_for_invalid_code(): void
+    {
+        $response = $this->postJson('/api/auth/exchange', ['code' => 'does_not_exist']);
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_exchange_returns_422_when_code_is_missing(): void
+    {
+        $response = $this->postJson('/api/auth/exchange', []);
+
+        $response->assertStatus(422);
     }
 
     protected function tearDown(): void

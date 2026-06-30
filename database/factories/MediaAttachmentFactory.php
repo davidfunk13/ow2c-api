@@ -4,11 +4,12 @@ namespace Database\Factories;
 
 use App\Enums\MediaType;
 use App\Enums\ProcessingStatus;
+use App\Models\MediaAttachment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MediaAttachment>
+ * @extends Factory<MediaAttachment>
  */
 class MediaAttachmentFactory extends Factory
 {

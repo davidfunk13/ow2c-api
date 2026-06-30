@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Map;
+use App\Models\MapSubmap;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MapSubmap>
+ * @extends Factory<MapSubmap>
  */
 class MapSubmapFactory extends Factory
 {

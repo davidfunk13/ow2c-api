@@ -6,7 +6,6 @@ use App\Models\Game;
 use App\Models\Map;
 use App\Models\PlaySession;
 use App\Models\User;
-use Database\Seeders\HeroSeeder;
 use Database\Seeders\MapSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -123,6 +122,36 @@ class PlaySessionControllerTest extends TestCase
 
         $response->assertUnprocessable();
         $response->assertJsonValidationErrors('ended_at');
+    }
+
+    public function test_store_ignores_client_supplied_user_id(): void
+    {
+        $otherUser = User::factory()->create();
+
+        $response = $this->actingAs($this->user)->postJson('/api/play-sessions', [
+            'title' => 'Mine',
+            'user_id' => $otherUser->id,
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('play_sessions', [
+            'id' => $response->json('id'),
+            'user_id' => $this->user->id,
+        ]);
+        $this->assertDatabaseMissing('play_sessions', [
+            'id' => $response->json('id'),
+            'user_id' => $otherUser->id,
+        ]);
+    }
+
+    public function test_store_validates_title_max_length(): void
+    {
+        $response = $this->actingAs($this->user)->postJson('/api/play-sessions', [
+            'title' => str_repeat('a', 256),
+        ]);
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors('title');
     }
 
     public function test_show_returns_session_with_games(): void

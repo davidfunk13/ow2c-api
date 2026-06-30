@@ -4,7 +4,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return response()->json(['message' => 'OW2C API']);
+    return response()->json(['message' => 'OWC API']);
 });
 
 Route::get('/auth/battlenet/redirect', [AuthController::class, 'redirect']);

@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\PlaySession;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PlaySession>
+ * @extends Factory<PlaySession>
  */
 class PlaySessionFactory extends Factory
 {

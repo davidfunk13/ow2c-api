@@ -4,10 +4,11 @@ namespace Database\Factories;
 
 use App\Models\CustomStatDefinition;
 use App\Models\Game;
+use App\Models\GameCustomStat;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GameCustomStat>
+ * @extends Factory<GameCustomStat>
  */
 class GameCustomStatFactory extends Factory
 {

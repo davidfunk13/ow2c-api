@@ -4,11 +4,12 @@ namespace Database\Factories;
 
 use App\Enums\Role;
 use App\Enums\SubRole;
+use App\Models\Hero;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Hero>
+ * @extends Factory<Hero>
  */
 class HeroFactory extends Factory
 {

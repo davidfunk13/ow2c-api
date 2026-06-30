@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Enums\MapType;
+use App\Models\Map;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Map>
+ * @extends Factory<Map>
  */
 class MapFactory extends Factory
 {

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use SocialiteProviders\Battlenet\Provider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(function (SocialiteWasCalled $event) {
-            $event->extendSocialite('battlenet', \SocialiteProviders\Battlenet\Provider::class);
+            $event->extendSocialite('battlenet', Provider::class);
         });
     }
 }

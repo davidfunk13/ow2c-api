@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\CustomStatDefinition;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CustomStatDefinition>
+ * @extends Factory<CustomStatDefinition>
  */
 class CustomStatDefinitionFactory extends Factory
 {

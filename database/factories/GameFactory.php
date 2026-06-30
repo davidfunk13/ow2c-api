@@ -6,11 +6,12 @@ use App\Enums\DataSource;
 use App\Enums\GameResult;
 use App\Enums\QueueType;
 use App\Enums\Role;
+use App\Models\Game;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Game>
+ * @extends Factory<Game>
  */
 class GameFactory extends Factory
 {
