@@ -215,6 +215,19 @@ class PlaySessionControllerTest extends TestCase
         $response->assertNotFound();
     }
 
+    public function test_update_validates_ended_at_after_started_at(): void
+    {
+        $session = PlaySession::factory()->create(['user_id' => $this->user->id]);
+
+        $response = $this->actingAs($this->user)->putJson("/api/play-sessions/{$session->id}", [
+            'started_at' => '2026-03-15T20:00:00Z',
+            'ended_at' => '2026-03-15T18:00:00Z',
+        ]);
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors('ended_at');
+    }
+
     public function test_destroy_deletes_session(): void
     {
         $session = PlaySession::factory()->create(['user_id' => $this->user->id]);

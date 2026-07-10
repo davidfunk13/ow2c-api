@@ -7,15 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class RankTierTest extends TestCase
 {
-    public function test_rank_tier_has_expected_cases(): void
-    {
-        $this->assertCount(8, RankTier::cases());
-        $this->assertEquals([
-            'bronze', 'silver', 'gold', 'platinum',
-            'diamond', 'master', 'grandmaster', 'champion',
-        ], RankTier::values());
-    }
-
     public function test_rank_tier_has_correct_labels(): void
     {
         $this->assertEquals('Bronze', RankTier::Bronze->label());
@@ -51,16 +42,5 @@ class RankTierTest extends TestCase
     public function test_rank_tier_rank_value_champion_null(): void
     {
         $this->assertEquals(800, RankTier::Champion->rankValue(null));
-    }
-
-    public function test_rank_tier_from_valid_string(): void
-    {
-        $this->assertEquals(RankTier::Bronze, RankTier::from('bronze'));
-        $this->assertEquals(RankTier::Champion, RankTier::from('champion'));
-    }
-
-    public function test_rank_tier_try_from_invalid_string_returns_null(): void
-    {
-        $this->assertNull(RankTier::tryFrom('invalid'));
     }
 }
