@@ -20,22 +20,6 @@ enum SubRole: string
     case Survivor = 'survivor';
     case Tactician = 'tactician';
 
-    public function label(): string
-    {
-        return match ($this) {
-            self::Bruiser => 'Bruiser',
-            self::Initiator => 'Initiator',
-            self::Stalwart => 'Stalwart',
-            self::Flanker => 'Flanker',
-            self::Sharpshooter => 'Sharpshooter',
-            self::Specialist => 'Specialist',
-            self::Recon => 'Recon',
-            self::Medic => 'Medic',
-            self::Survivor => 'Survivor',
-            self::Tactician => 'Tactician',
-        };
-    }
-
     public function role(): Role
     {
         return match ($this) {
@@ -55,13 +39,5 @@ enum SubRole: string
             Role::Damage => [self::Flanker, self::Sharpshooter, self::Specialist, self::Recon],
             Role::Support => [self::Medic, self::Survivor, self::Tactician],
         };
-    }
-
-    /**
-     * @return array<string>
-     */
-    public static function values(): array
-    {
-        return array_column(self::cases(), 'value');
     }
 }

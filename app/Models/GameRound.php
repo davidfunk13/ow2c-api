@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\GameResult;
+use App\Enums\RoundSide;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,7 +35,12 @@ class GameRound extends Model
     {
         return [
             'result' => GameResult::class,
-            'distance_meters' => 'decimal:2',
+            'side' => RoundSide::class,
+            'round_number' => 'integer',
+            'score_team' => 'integer',
+            'score_enemy' => 'integer',
+            'checkpoints_reached' => 'integer',
+            'distance_meters' => 'float',
             'is_overtime' => 'boolean',
         ];
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\DataSource;
 use App\Enums\GameResult;
+use App\Enums\GameStatus;
 use App\Enums\QueueType;
 use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,9 +19,19 @@ class Game extends Model
 {
     use HasFactory;
 
+    public const DETAIL_RELATIONS = [
+        'map.submaps',
+        'gameHeroes.hero',
+        'gameRounds.roundHeroes.hero',
+        'gameRounds.mapSubmap',
+        'rankSnapshots',
+        'heroSrSnapshots.hero',
+    ];
+
     protected $attributes = [
         'is_placement' => false,
         'data_source' => 'manual',
+        'status' => 'complete',
     ];
 
     protected $fillable = [
@@ -29,6 +40,7 @@ class Game extends Model
         'map_id',
         'queue_type',
         'result',
+        'status',
         'role_played',
         'played_at',
         'duration_seconds',
@@ -42,6 +54,7 @@ class Game extends Model
         return [
             'queue_type' => QueueType::class,
             'result' => GameResult::class,
+            'status' => GameStatus::class,
             'role_played' => Role::class,
             'data_source' => DataSource::class,
             'played_at' => 'datetime',

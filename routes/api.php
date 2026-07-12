@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\GameRoundController;
+use App\Http\Controllers\GameSnapshotController;
 use App\Http\Controllers\HeroController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\PlaySessionController;
@@ -18,4 +21,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Play Sessions
     Route::apiResource('play-sessions', PlaySessionController::class);
     Route::patch('/play-sessions/{play_session}/end', [PlaySessionController::class, 'end']);
+
+    // Games
+    Route::apiResource('games', GameController::class);
+    Route::apiResource('games.rounds', GameRoundController::class)
+        ->shallow()
+        ->only(['store', 'update', 'destroy']);
+    Route::put('/games/{game}/snapshots', [GameSnapshotController::class, 'update']);
 });

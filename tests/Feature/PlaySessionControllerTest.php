@@ -83,10 +83,10 @@ class PlaySessionControllerTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $response->assertJson([
+        $response->assertJson(['data' => [
             'title' => 'Evening Session',
             'notes' => 'Ranked grind',
-        ]);
+        ]]);
         $this->assertDatabaseHas('play_sessions', [
             'user_id' => $this->user->id,
             'title' => 'Evening Session',
@@ -98,7 +98,7 @@ class PlaySessionControllerTest extends TestCase
         $response = $this->actingAs($this->user)->postJson('/api/play-sessions', []);
 
         $response->assertCreated();
-        $this->assertNotNull($response->json('started_at'));
+        $this->assertNotNull($response->json('data.started_at'));
     }
 
     public function test_store_accepts_custom_started_at(): void
@@ -110,7 +110,7 @@ class PlaySessionControllerTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $this->assertEquals($date, $response->json('started_at'));
+        $this->assertEquals($date, $response->json('data.started_at'));
     }
 
     public function test_store_validates_ended_at_after_started_at(): void
@@ -135,11 +135,11 @@ class PlaySessionControllerTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('play_sessions', [
-            'id' => $response->json('id'),
+            'id' => $response->json('data.id'),
             'user_id' => $this->user->id,
         ]);
         $this->assertDatabaseMissing('play_sessions', [
-            'id' => $response->json('id'),
+            'id' => $response->json('data.id'),
             'user_id' => $otherUser->id,
         ]);
     }
@@ -169,12 +169,14 @@ class PlaySessionControllerTest extends TestCase
         $response = $this->actingAs($this->user)->getJson("/api/play-sessions/{$session->id}");
 
         $response->assertOk();
-        $response->assertJson(['id' => $session->id]);
-        $response->assertJsonCount(1, 'games');
+        $response->assertJsonPath('data.id', $session->id);
+        $response->assertJsonCount(1, 'data.games');
         $response->assertJsonStructure([
-            'id', 'title', 'notes', 'started_at', 'ended_at', 'games_count',
-            'games' => [
-                '*' => ['id', 'map', 'result', 'game_heroes', 'game_rounds'],
+            'data' => [
+                'id', 'title', 'notes', 'started_at', 'ended_at', 'games_count',
+                'games' => [
+                    '*' => ['id', 'map', 'result', 'heroes', 'rounds'],
+                ],
             ],
         ]);
     }
@@ -201,7 +203,7 @@ class PlaySessionControllerTest extends TestCase
         ]);
 
         $response->assertOk();
-        $response->assertJson(['title' => 'New Title', 'notes' => 'Updated notes']);
+        $response->assertJson(['data' => ['title' => 'New Title', 'notes' => 'Updated notes']]);
     }
 
     public function test_update_returns_404_for_other_users_session(): void
@@ -221,6 +223,22 @@ class PlaySessionControllerTest extends TestCase
 
         $response = $this->actingAs($this->user)->putJson("/api/play-sessions/{$session->id}", [
             'started_at' => '2026-03-15T20:00:00Z',
+            'ended_at' => '2026-03-15T18:00:00Z',
+        ]);
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors('ended_at');
+    }
+
+    public function test_update_rejects_ended_at_before_the_stored_started_at(): void
+    {
+        $session = PlaySession::factory()->create([
+            'user_id' => $this->user->id,
+            'started_at' => '2026-03-15T20:00:00Z',
+            'ended_at' => null,
+        ]);
+
+        $response = $this->actingAs($this->user)->putJson("/api/play-sessions/{$session->id}", [
             'ended_at' => '2026-03-15T18:00:00Z',
         ]);
 
@@ -257,7 +275,7 @@ class PlaySessionControllerTest extends TestCase
         $response = $this->actingAs($this->user)->patchJson("/api/play-sessions/{$session->id}/end");
 
         $response->assertOk();
-        $this->assertNotNull($response->json('ended_at'));
+        $this->assertNotNull($response->json('data.ended_at'));
         $session->refresh();
         $this->assertNotNull($session->ended_at);
     }

@@ -8,20 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class SubRoleTest extends TestCase
 {
-    public function test_sub_role_has_correct_labels(): void
-    {
-        $this->assertEquals('Bruiser', SubRole::Bruiser->label());
-        $this->assertEquals('Initiator', SubRole::Initiator->label());
-        $this->assertEquals('Stalwart', SubRole::Stalwart->label());
-        $this->assertEquals('Flanker', SubRole::Flanker->label());
-        $this->assertEquals('Sharpshooter', SubRole::Sharpshooter->label());
-        $this->assertEquals('Specialist', SubRole::Specialist->label());
-        $this->assertEquals('Recon', SubRole::Recon->label());
-        $this->assertEquals('Medic', SubRole::Medic->label());
-        $this->assertEquals('Survivor', SubRole::Survivor->label());
-        $this->assertEquals('Tactician', SubRole::Tactician->label());
-    }
-
     public function test_sub_role_for_role_tank(): void
     {
         $tankSubRoles = SubRole::forRole(Role::Tank);

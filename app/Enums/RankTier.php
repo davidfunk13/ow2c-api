@@ -13,20 +13,6 @@ enum RankTier: string
     case Grandmaster = 'grandmaster';
     case Champion = 'champion';
 
-    public function label(): string
-    {
-        return match ($this) {
-            self::Bronze => 'Bronze',
-            self::Silver => 'Silver',
-            self::Gold => 'Gold',
-            self::Platinum => 'Platinum',
-            self::Diamond => 'Diamond',
-            self::Master => 'Master',
-            self::Grandmaster => 'Grandmaster',
-            self::Champion => 'Champion',
-        };
-    }
-
     public function rankValue(?int $division): int
     {
         $tierBase = match ($this) {
@@ -45,13 +31,5 @@ enum RankTier: string
         }
 
         return $tierBase + (6 - $division) * 5;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public static function values(): array
-    {
-        return array_column(self::cases(), 'value');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlaySessionRequest;
 use App\Http\Requests\UpdatePlaySessionRequest;
+use App\Http\Resources\PlaySessionResource;
 use App\Models\PlaySession;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class PlaySessionController extends Controller
             ->orderByDesc('started_at')
             ->paginate(20);
 
-        return response()->json($sessions);
+        return PlaySessionResource::collection($sessions)->response();
     }
 
     public function store(StorePlaySessionRequest $request): JsonResponse
@@ -30,54 +31,38 @@ class PlaySessionController extends Controller
             'ended_at' => $request->ended_at,
         ]);
 
-        return response()->json($session, 201);
+        return PlaySessionResource::make($session)->response()->setStatusCode(201);
     }
 
-    public function show(Request $request, PlaySession $playSession): JsonResponse
+    public function show(PlaySession $playSession): JsonResponse
     {
-        if ($playSession->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-
         $playSession->load(['games' => function ($query) {
             $query->with(['map', 'gameHeroes.hero', 'gameRounds'])
                 ->orderBy('played_at');
         }]);
         $playSession->loadCount('games');
 
-        return response()->json($playSession);
+        return PlaySessionResource::make($playSession)->response();
     }
 
     public function update(UpdatePlaySessionRequest $request, PlaySession $playSession): JsonResponse
     {
-        if ($playSession->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-
         $playSession->update($request->validated());
 
-        return response()->json($playSession);
+        return PlaySessionResource::make($playSession)->response();
     }
 
-    public function destroy(Request $request, PlaySession $playSession): JsonResponse
+    public function destroy(PlaySession $playSession): JsonResponse
     {
-        if ($playSession->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-
         $playSession->delete();
 
         return response()->json(['message' => 'Deleted']);
     }
 
-    public function end(Request $request, PlaySession $playSession): JsonResponse
+    public function end(PlaySession $playSession): JsonResponse
     {
-        if ($playSession->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-
         $playSession->update(['ended_at' => now()]);
 
-        return response()->json($playSession);
+        return PlaySessionResource::make($playSession)->response();
     }
 }

@@ -27,6 +27,7 @@ class HeroSrSnapshot extends Model
     protected function casts(): array
     {
         return [
+            'sr_value' => 'integer',
             'recorded_at' => 'datetime',
         ];
     }

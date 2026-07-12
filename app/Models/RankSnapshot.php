@@ -32,6 +32,9 @@ class RankSnapshot extends Model
     {
         return [
             'tier' => RankTier::class,
+            'division' => 'integer',
+            'rank_value' => 'integer',
+            'progress_percent' => 'integer',
             'recorded_at' => 'datetime',
         ];
     }
